@@ -7,8 +7,8 @@ on:
     branches:
       - main
 jobs:
-  deploy:
-    name: Deploy
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,5 +29,23 @@ jobs:
           name: dist
           path: ./dist
 
+  dev-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+    environment: dev
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: ./dist
+
       - name: Deploy
-        run: npm run deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy dist/practice4/index.js --name my-svelte-app --compatibility-date 2026-02-26 --compatibility-flags=nodejs_compat --assets-dir dist/practice4/client
+
+
