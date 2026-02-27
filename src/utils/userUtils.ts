@@ -8,6 +8,8 @@ export interface User {
 let _nextId = 1
 export function resetIdCounter() { _nextId = 1 } // exposed for tests
 
+
+//prueba
 /**
  * Validates the user form inputs.
  * Returns an error message string, or null if valid.
